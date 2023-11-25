@@ -183,6 +183,7 @@ class Image {
   constructor(parent) {
     this.parent = parent;
     this.style = {};
+    this.text = "";
     this.blob = undefined;
   }
 
@@ -192,6 +193,21 @@ class Image {
 
   get height() {
     return this.style[DocumentApp.Attribute.HEIGHT];
+  }
+
+  fromChart(chart) {
+    const blob = chart.getBlob();
+    const options = chart.getOptions();
+
+    return this
+      .Blob(blob)
+      .Width(options.get("width"))
+      .Height(options.get("height"))
+  }
+
+  Blob(blob) {
+    this.blob = blob;
+    return this;
   }
 
   Scale(scale = 1) {
@@ -206,10 +222,11 @@ class Image {
 
   Height(height) {
     this.style[DocumentApp.Attribute.HEIGHT] = height;
+    return this;
   }
 
   apply(body, start, end) {
-    const image = body.appendImage(this.blob);
+    const image = body.appendInlineImage(this.blob);
     image.setAttributes(this.style);
   }
 }
