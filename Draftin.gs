@@ -171,6 +171,7 @@ class Rule {
   constructor(parent) {
     this.parent = parent;
     this.style = {};
+    this.text = "";
   }
 
   apply(body, start, end) {
@@ -222,7 +223,7 @@ class Text {
 
   apply(body, start, end) {
     const text = body.editAsText()
-    text.setAttributes(start, end - 1, this.style);
+    text.setAttributes(start, Math.max(start, end - 1), this.style);
   }
 
   Text(text) {
