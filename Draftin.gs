@@ -274,3 +274,75 @@ class Text {
     return this;
   }
 }
+
+
+class Chart {
+
+  constructor() {
+    this.x = undefined;
+    this.y = undefined;
+    this.title = undefined;
+    this.height = 300;
+    this.width = this.height * 1.618;
+    this.margin = (3 / 50) * this.width;
+    this.color = '#4285F4'
+    this.inkColor = 'grey'
+    this.format = 'short';
+    this.thickness = 4;
+  }
+
+  X(label, data) {
+    this.x = {
+      data: data,
+      label: label,
+    }
+    return this;
+  }
+
+  Y(label, data) {
+    this.y = {
+      data: data,
+      label: label,
+    }
+    return this;
+  }
+
+  Format(format) {
+    this.format = format;
+    return this;
+  }
+
+  build() {
+    const data = Charts.newDataTable()
+      .addColumn(Charts.ColumnType.DATE, this.x.label)
+      .addColumn(Charts.ColumnType.NUMBER, this.y.label)
+    this.x.data.forEach((value, index) => data.addRow([value, this.y.data[index]]))
+
+    return Charts.newLineChart()
+      .setDataTable(data.build())
+      .setTitle(this.y.label)
+      // TODO: doesn't work in appscript
+      // .setOption('backgroundColor', 'transparent')
+      .setOption('legend.position', 'none')
+      .setOption('titleTextStyle', { color: this.inkColor, fontSize: 20 })
+      .setOption('hAxis.textStyle', { color: this.inkColor, fontSize: 12 })
+      .setOption('vAxis.textStyle', { color: this.inkColor, fontSize: 12 })
+      .setOption('colors', [this.color])
+      .setOption('hAxis.format', 'yyyy-MM-dd')
+      .setOption('hAxis.gridlines', { color: 'transparent', count: 3 })
+      .setOption('vAxis.gridlines', { color: this.inkColor, count: 4 })
+      // TODO: doesn't work in appscript :/
+      //.setOption('hAxis.baselineColor', this.inkColor)
+      .setOption('vAxis.minorGridlines', { count: 0 })
+      .setOption('vAxis.format', this.format)
+      .setOption('lineWidth', this.thickness)
+      .setOption('chartArea', {
+        left: this.margin,
+        top: this.margin,
+        width: this.width - (2 * this.margin),
+        height: this.height - (2 * this.margin)
+      })
+      .setDimensions(this.width, this.height)
+      .build();
+  }
+}
