@@ -284,11 +284,11 @@ class Chart {
     this.title = undefined;
     this.height = 300;
     this.width = this.height * 1.618;
-    this.margin = (3 / 50) * this.width;
+    this.margin = (1 / 10) * this.width;
     this.color = '#4285F4'
     this.inkColor = 'grey'
     this.format = 'short';
-    this.thickness = 4;
+    this.thickness = 3;
   }
 
   X(label, data) {
@@ -312,13 +312,17 @@ class Chart {
     return this;
   }
 
-  build() {
+  chart() {
+    return Charts.newLineChart()
+  }
+
+  make() {
     const data = Charts.newDataTable()
       .addColumn(Charts.ColumnType.DATE, this.x.label)
       .addColumn(Charts.ColumnType.NUMBER, this.y.label)
     this.x.data.forEach((value, index) => data.addRow([value, this.y.data[index]]))
 
-    return Charts.newLineChart()
+    return this.chart()
       .setDataTable(data.build())
       .setTitle(this.y.label)
       // TODO: doesn't work in appscript
@@ -343,6 +347,21 @@ class Chart {
         height: this.height - (2 * this.margin)
       })
       .setDimensions(this.width, this.height)
-      .build();
+  }
+
+  build() {
+    return this.make().build()
+  }
+}
+
+class LineChart extends Chart {
+  chart() {
+    return Charts.newLineChart()
+  }
+}
+
+class ColumnChart extends Chart {
+  chart() {
+    return Charts.newColumnChart()
   }
 }
